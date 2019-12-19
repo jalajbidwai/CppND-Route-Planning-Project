@@ -27,6 +27,22 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     return std::move(contents);
 }
 
+void ReadValueFromUserInput(float &var, const std::string var_name) {
+  float value = 0.0;
+
+  std::cout << "Please enter value for <" + var_name + ">: ";
+  std::cin >> value;
+
+  while (std::cin.fail() || value < 0 || value > 100) {
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cout << "Wrong input value (0 <= val <= 100). Please try again: ";
+    std::cin >> value;
+  }
+
+  var = value;
+}
+
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
@@ -51,20 +67,20 @@ int main(int argc, const char **argv)
         else
             osm_data = std::move(*data);
     }
+	
+	
+	float start_x = 0.0, start_y = 0.0, end_x = 0.0, end_y = 0.0;
+
+	ReadValueFromUserInput(start_x, "start_x");
+	ReadValueFromUserInput(start_y, "start_y");
+	ReadValueFromUserInput(end_x, "end_x");
+	ReadValueFromUserInput(end_y, "end_y");
+
     
     // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
-	float start_x, start_y, end_x, end_y;
-	std::cout << "Enter starting x coordinated between 0 - 99 : ";
-	std::cin >> start_x;
-	std::cout << "Enter starting y coordinated between 0 - 99 : ";
-	std::cin >> start_y;
-	std::cout << "Enter end x coordinated between 0 - 99 :";
-	std::cin >> end_x;
-	std::cout << "Enter end y coordinated between 0 - 99 :";
-	std::cin >> end_y;
-
+	
 
     // Build Model.
     RouteModel model{osm_data};
